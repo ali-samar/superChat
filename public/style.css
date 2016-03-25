@@ -1,0 +1,76 @@
+body, html {
+	height: 100%;
+	width: 100%;
+}
+
+#titre {
+	color: #ee2560;
+	font-weight: bold;
+	font-size: 3em;
+}
+
+#zone_chat {
+    background-color: pink;
+    margin: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 1.5em;
+    height: 67vh;
+    overflow: auto;
+    word-wrap: break-word;
+}
+
+#message {
+	margin: 10px;
+	margin-left: 47px;
+	background-color: #ee2560;
+}
+
+#connected {
+	background-color: #ee2560;
+	padding: 20px;
+	margin: 10px;
+	height: 67vh;
+	font-size: 1.5em;
+	border-radius: 10px;
+	overflow: auto;
+    word-wrap: break-word;
+    color: white;
+}
+
+.connectes {
+	font-weight: bold;
+	color: white;
+	text-align: center;
+}
+
+#formulaire_chat {
+	bottom: 20px;
+	position: fixed;
+	width: 100% !important;
+}
+
+.msg {
+	display: inline-flex;
+	width: 83%;
+	color : #ee2560;
+	font-weight: bold;
+}
+
+.pseudo {
+	font-weight: bold;
+	font-style: italic;
+	color: #ee2560;
+	background-color: #f4f4f4;
+	border-radius: 23px;
+	margin-right: 20px;
+	margin-bottom: 5px;
+	padding: 10px;
+}
+
+.date {
+	color: white;
+	font-weight: bold;
+	font-size: 10px;
+	float: right;
+}

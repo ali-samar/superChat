@@ -1,0 +1,94 @@
+<!-- Client -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Super Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+</head>
+<body>
+
+        <br><br>
+
+        <h1 class="ui center aligned header" id="titre">Le super Chat temps réel !</h1>
+
+        <br><br><br>
+
+        <div class="ui right grid">
+            <div class="left floated left aligned twelve wide column">
+                <section id="zone_chat">
+
+                </section>
+            </div>
+       
+            <div class="right floated left aligned four wide column">
+                <section id="connected">
+                    <!-- <p class="connectes">Utilisateurs connectés</p> -->
+                </section>
+            </div>
+        </div>               
+
+        <form action="/" method="post" id="formulaire_chat" class="ui form">
+            <div class="ui right aligned grid">
+                <div class="ui eleven wide column">
+                    <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
+                </div>
+            </div>
+        </form>
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+
+            // Connexion à socket.io
+            var socket = io.connect('http://192.168.1.82:3000');
+
+            // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
+            var pseudo = prompt('Quel est votre pseudo ?');
+            socket.emit('nouveau_client', pseudo);
+            document.title = pseudo + ' - ' + document.title;
+
+            // Quand on reçoit un message, on l'insère dans la page
+            socket.on('message', function(data) {
+                insereMessage(data.pseudo, data.message, data.dateString)
+            })
+
+            // Quand un nouveau client se connecte, on affiche l'information
+            socket.on('nouveau_client', function(pseudo) {
+                $('#zone_chat').append('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
+            })
+
+            socket.on('connected', function(users) {
+                $('#connected').html('');
+                for (var user in users) {
+                    var name = users[user].name;
+                    $('#connected').append('<p><em>' + name + ' est connecté</em></p>');
+                }
+            })
+
+            // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
+            $('#formulaire_chat').submit(function () {
+                var message = $('#message').val();
+                socket.emit('message', message); // Transmet le message aux autres
+
+                var reg = new RegExp("((http://)|(https://)[a-zA-Z0-9/.]+)+","gi");
+                var linkifed = message.replace(reg, "<a href='$1' target=_blank>$1</a>");
+                var date = new Date();
+                var dateString = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+
+                insereMessage(pseudo, linkifed, dateString); // Affiche le message aussi sur notre page
+                $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+                $('#zone_chat').animate({scrollTop : $('#zone_chat').prop('scrollHeight') }, 50);
+                return false; // Permet de bloquer l'envoi "classique" du formulaire
+            });
+            
+            // Ajoute un message dans la page
+            function insereMessage(pseudo, linkifed, dateString) {
+                $('#zone_chat').append('<div>' + '<span class="pseudo">' + pseudo  + '</span> <span class="msg">' + linkifed + '</span>' + '<span class="date">' + dateString + '</span>' + '<br><br><br></div>');
+            }
+
+        </script>
+    </body>
+</html>
